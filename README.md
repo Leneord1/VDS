@@ -16,7 +16,19 @@ python main.py
 | `src/` | Backend packages (later) |
 | `documentation/` | SRS, SDD, testing (LaTeX) |
 
-## Documentation
+## CI
+
+GitHub Actions under `.github/workflows/`:
+
+| Workflow | Role |
+|----------|------|
+| `python-package-conda.yml` | Conda env, flake8, `main.py` smoke, pytest |
+| `pylint.yml` | Pylint on tracked `*.py` |
+| `codeql.yml` | CodeQL for Python + Actions |
+| `sonarqube.yml` | SonarQube (`SONAR_TOKEN`, `SONAR_HOST_URL` secrets) |
+
+Supporting files: `environment.yml`, `requirements.txt`, `sonar-project.properties`.
+
 
 IEEE conference format (`IEEEtran`). Requires a TeX install with the IEEE class (TeX Live / MiKTeX).
 

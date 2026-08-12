@@ -1,0 +1,9 @@
+name: vehicle-dynamics
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy>=1.26
+  - pytest>=8.0
+  - flake8
