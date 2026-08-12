@@ -1,0 +1,94 @@
+% Software Design Description — Vehicle Dynamics (IEEEtran)
+% Requires IEEEtran.cls (TeX Live / MiKTeX IEEE package).
+
+\documentclass[conference]{ieeetran.cls}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Software Design Description\\for a Vehicle Dynamics Simulator with DEM Soft Soil}
+
+\author{\IEEEauthorblockN{Sankalp Amaravadi}
+\IEEEauthorblockA{Vehicle Dynamics Project\\
+Email: (TBD)}}
+
+\maketitle
+
+\begin{abstract}
+This Software Design Description (SDD) outlines the architecture of a vehicle
+dynamics backend that couples chassis/tire models to GPU-oriented discrete
+element method (DEM) soft-soil simulation. The design separates orchestration,
+vehicle physics, granular soil, tire--soil coupling, and I/O. Implementation
+details for individual modules remain TBD pending Phase~2 development.
+\end{abstract}
+
+\begin{IEEEkeywords}
+software design, vehicle dynamics, DEM, architecture, GPU, Python
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\subsection{Purpose}
+This SDD communicates system structure, module boundaries, and planned data
+flow for implementers and reviewers.
+
+\subsection{Scope}
+Covered: Python orchestration, vehicle subsystem, DEM soil subsystem, coupling,
+integration loop, and export. Not covered: graphical front end.
+
+\subsection{Reference Documents}
+Companion artifacts include the project SRS (\texttt{srs.tex}) and testing
+document (\texttt{testing.tex}) under \texttt{documentation/}.
+
+\section{System Overview}
+The simulator is a greenfield application with entry point \texttt{main.py}.
+Backend packages are planned under \texttt{src/}. Documentation is maintained as
+IEEE-formatted \LaTeX\ sources.
+
+\section{Architectural Design}
+
+\subsection{Logical View}
+\begin{enumerate}
+  \item \textbf{Orchestration} --- configuration loading, scenario selection,
+        and the global time loop.
+  \item \textbf{Vehicle} --- multi-DOF chassis and tire models (beyond
+        bicycle-only approximations).
+  \item \textbf{DEM soil} --- particle state, neighbor search, and contact
+        resolution; GPU kernels for large $N$.
+  \item \textbf{Coupling} --- exchange of forces and kinematic constraints
+        between wheels and soil particles.
+  \item \textbf{I/O} --- logging and CSV/time-series export.
+\end{enumerate}
+
+\subsection{Process View}
+A fixed- or adaptive-step loop (TBD) advances vehicle and DEM state, then
+applies coupling forces before optional export at configured intervals.
+
+\subsection{Data Flow}
+Configuration $\rightarrow$ initialize vehicle and particle field $\rightarrow$
+time step (vehicle, DEM, couple) $\rightarrow$ export.
+
+\section{Detailed Design (TBD)}
+Class diagrams, interfaces, and algorithm notes for DEM contact and vehicle
+integrators will be added as modules are implemented.
+
+\section{Deployment View}
+Primary deployment is a local workstation. Million-scale DEM runs expect an
+NVIDIA-compatible GPU and drivers. Operators invoke the system via
+\texttt{python main.py}.
+
+\section*{Acknowledgment}
+This document follows the IEEE conference \LaTeX\ template (\texttt{IEEEtran}).
+
+\begin{thebibliography}{00}
+\bibitem{ieee1016} IEEE Std 1016-2009, \emph{IEEE Standard for Information
+Technology---Systems Design---Software Design Descriptions}.
+\bibitem{ieeetran} M.~Shell, ``IEEEtran homepage,''
+\url{https://www.michaelshell.org/tex/ieeetran/}.
+\end{thebibliography}
+
+\end{document}
