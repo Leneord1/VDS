@@ -1,0 +1,131 @@
+% Software Requirements Specification — Vehicle Dynamics (IEEEtran)
+% Requires IEEEtran.cls (TeX Live / MiKTeX IEEE package).
+
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{Software Requirements Specification\\for a Vehicle Dynamics Simulator with DEM Soft Soil}
+
+\author{\IEEEauthorblockN{Sankalp Amaravadi}
+\IEEEauthorblockA{Vehicle Dynamics Project\\
+Email: (TBD)}}
+
+\maketitle
+
+\begin{abstract}
+This Software Requirements Specification (SRS) defines functional and non-functional
+requirements for a greenfield vehicle-dynamics backend. The system couples a
+multi-body vehicle model to discrete-element-method (DEM) loose-ground simulation
+with a target scale of millions of particles on GPU. A Python orchestration layer
+provides configuration, scenario control, and data export. Graphical front-end
+requirements are deferred.
+\end{abstract}
+
+\begin{IEEEkeywords}
+vehicle dynamics, DEM, soft soil, SRS, GPU simulation, Python
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\subsection{Purpose}
+This document specifies software requirements for the Vehicle Dynamics simulator
+backend. It is intended for developers, reviewers, and stakeholders who validate
+scope before design and implementation proceed.
+
+\subsection{Document Conventions}
+Requirements are labeled FR-$n$ (functional) and NFR-$n$ (non-functional). Items
+marked TBD remain open until later phases.
+
+\subsection{Scope}
+The product is a command-line / API-driven simulator that:
+\begin{itemize}
+  \item advances vehicle dynamics on terrain;
+  \item represents loose ground as DEM particle assemblies;
+  \item couples tire--soil interaction;
+  \item exports time-series and logs for analysis.
+\end{itemize}
+User-interface clients are out of scope for early phases.
+
+\subsection{Definitions and Acronyms}
+\begin{itemize}
+  \item \textbf{DEM} --- Discrete Element Method for granular media.
+  \item \textbf{Soft soil / loose ground} --- Terrain modeled as many DEM bodies.
+  \item \textbf{SRS} --- Software Requirements Specification.
+  \item \textbf{SDD} --- Software Design Description.
+\end{itemize}
+
+\section{Overall Description}
+
+\subsection{Product Perspective}
+The backend is greenfield software. It is not derived from the CS4632 dealership
+discrete-event simulation codebase. Long-term architecture separates Python
+orchestration from GPU DEM kernels.
+
+\subsection{Product Functions}
+Primary capabilities include vehicle motion simulation, large-scale DEM soil,
+tire--soil coupling, scenario-driven runs, and persistent outputs for
+post-processing.
+
+\subsection{User Characteristics}
+Primary users are developers and analysts executing batch or interactive runs
+from the command line. Secondary users may consume exported data in external
+tools.
+
+\subsection{Constraints}
+\begin{itemize}
+  \item Orchestration language: Python~3.
+  \item Million-scale DEM requires GPU-capable hardware and drivers.
+  \item Documentation artifacts (SRS, SDD, testing) reside under
+        \texttt{documentation/}.
+\end{itemize}
+
+\section{Functional Requirements}
+\begin{itemize}
+  \item \textbf{FR-1:} The system shall provide a runnable entry point
+        (\texttt{main.py}).
+  \item \textbf{FR-2:} The system shall accept configuration for vehicle and
+        soil parameters (TBD schema).
+  \item \textbf{FR-3:} The system shall advance a coupled vehicle--DEM
+        simulation over a configured time horizon (TBD).
+  \item \textbf{FR-4:} The system shall persist simulation outputs suitable for
+        post-processing (TBD formats).
+  \item \textbf{FR-5:} The system shall support scenario definitions for
+        repeatable maneuvers (TBD library).
+\end{itemize}
+
+\section{Non-Functional Requirements}
+\begin{itemize}
+  \item \textbf{NFR-1:} The DEM path shall target GPU execution for
+        million-scale particle counts.
+  \item \textbf{NFR-2:} Hot paths may use GPU kernels while remaining
+        invocable from Python orchestration.
+  \item \textbf{NFR-3:} Source and documents shall remain suitable for version
+        control and reproducible builds.
+  \item \textbf{NFR-4:} Small-scale DEM modes shall exist for development and
+        continuous integration without requiring full GPU scale.
+\end{itemize}
+
+\section{Requirements Reserved for Later Phases}
+Detailed vehicle degrees of freedom, tire constitutive model, DEM contact law,
+validation metrics, and scenario catalog remain TBD and will be amended in
+subsequent SRS revisions.
+
+\section*{Acknowledgment}
+This document follows the IEEE conference \LaTeX\ template (\texttt{IEEEtran}).
+
+\begin{thebibliography}{00}
+\bibitem{ieee830} IEEE Std 830-1998 (withdrawn), \emph{IEEE Recommended Practice
+for Software Requirements Specifications}.
+\bibitem{ieeetran} M.~Shell, ``IEEEtran homepage,''
+\url{https://www.michaelshell.org/tex/ieeetran/}.
+\end{thebibliography}
+
+\end{document}

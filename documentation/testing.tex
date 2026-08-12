@@ -1,0 +1,107 @@
+% Testing Document — Vehicle Dynamics (IEEEtran)
+% Requires IEEEtran.cls (TeX Live / MiKTeX IEEE package).
+
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Software Testing Document\\for a Vehicle Dynamics Simulator with DEM Soft Soil}
+
+\author{\IEEEauthorblockN{Sankalp Amaravadi}
+\IEEEauthorblockA{Vehicle Dynamics Project\\
+Email: (TBD)}}
+
+\maketitle
+
+\begin{abstract}
+This testing document defines strategy, levels, and initial cases for the
+Vehicle Dynamics backend. Coverage spans unit, integration, and system tests for
+orchestration, vehicle models, DEM soil, and tire--soil coupling. GPU-scale
+performance tests are treated as optional, environment-specific checks. User
+interface testing is deferred with the front end.
+\end{abstract}
+
+\begin{IEEEkeywords}
+software testing, verification, vehicle dynamics, DEM, pytest, GPU
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\subsection{Purpose}
+Describe how correctness, regression safety, and (where applicable) performance
+are assessed for the Vehicle Dynamics simulator.
+
+\subsection{Scope}
+In scope: backend modules and end-to-end runs via \texttt{main.py}. Out of
+scope: GUI testing until a front end exists.
+
+\subsection{References}
+SRS (\texttt{srs.tex}) and SDD (\texttt{sdd.tex}) define requirements and
+design under test.
+
+\section{Test Strategy}
+\begin{itemize}
+  \item Unit tests for pure Python modules (configuration, helpers, I/O).
+  \item Integration tests for vehicle--DEM coupling with small particle counts.
+  \item Optional GPU performance / scale checks for large DEM runs (non-blocking
+        for default CI).
+  \item Regression scenarios with golden-output tolerances (TBD).
+\end{itemize}
+
+\section{Test Levels}
+
+\subsection{Unit Testing}
+Verify individual functions and classes in isolation with deterministic inputs.
+
+\subsection{Integration Testing}
+Verify tire--soil coupling and time-loop ordering using tiny DEM fields that
+run on CPU or modest GPU allocations.
+
+\subsection{System Testing}
+Execute end-to-end scenarios through \texttt{main.py} and confirm expected
+artifacts and exit status.
+
+\subsection{Acceptance / Performance (Optional)}
+Measure wall-clock time and memory for large particle counts on GPU hardware.
+Results are informative unless a quantitative NFR threshold is adopted.
+
+\section{Test Cases}
+\begin{itemize}
+  \item \textbf{TC-1:} \texttt{main.py} completes successfully (Phase~1 smoke).
+  \item \textbf{TC-2:} Configuration loading rejects invalid parameters (TBD).
+  \item \textbf{TC-3:} A small DEM step satisfies stated invariants within
+        tolerance (TBD).
+  \item \textbf{TC-4:} Exported time series contain required columns and
+        monotonically increasing time (TBD).
+\end{itemize}
+
+\section{Environment and Tooling}
+\begin{itemize}
+  \item Language runtime: Python~3.
+  \item Planned automation: \texttt{pytest}.
+  \item GPU tests: compatible NVIDIA drivers and selected DEM/GPU stack when
+        scale tests are enabled.
+\end{itemize}
+
+\section{Pass / Fail Criteria}
+A build passes default CI when all mandatory unit, integration, and system
+smoke tests succeed. Optional GPU-scale jobs may fail independently without
+blocking documentation-only or CPU-smoke pipelines until NFR thresholds are
+frozen.
+
+\section*{Acknowledgment}
+This document follows the IEEE conference \LaTeX\ template (\texttt{IEEEtran}).
+
+\begin{thebibliography}{00}
+\bibitem{ieee829} IEEE Std 829-2008, \emph{IEEE Standard for Software and
+System Test Documentation}.
+\bibitem{ieeetran} M.~Shell, ``IEEEtran homepage,''
+\url{https://www.michaelshell.org/tex/ieeetran/}.
+\end{thebibliography}
+
+\end{document}
