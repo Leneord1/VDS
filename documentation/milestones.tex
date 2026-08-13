@@ -1,0 +1,141 @@
+% Project Milestones — Vehicle Dynamics (IEEEtran)
+% Requires IEEEtran.cls (TeX Live / MiKTeX IEEE package).
+
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Project Milestones\\Vehicle Dynamics Simulator with DEM Soft Soil}
+
+\author{\IEEEauthorblockN{Sankalp Amaravadi}
+\IEEEauthorblockA{Vehicle Dynamics Project\\
+Email: (TBD)}}
+
+\maketitle
+
+\begin{abstract}
+This document defines multi-phase milestones for the Vehicle Dynamics backend.
+Each milestone follows the Phase~1 pattern: directory and documentation updates,
+then a concrete runnable entry-point change. Frontend work remains deferred
+until after the GPU DEM path is established.
+\end{abstract}
+
+\begin{IEEEkeywords}
+milestones, vehicle dynamics, DEM, project plan, verification
+\end{IEEEkeywords}
+
+\section{Milestone Pattern}
+Every milestone delivers three artifact classes, matching Phase~1:
+\begin{enumerate}
+  \item \textbf{Structure} --- directories and/or modules.
+  \item \textbf{Documentation} --- IEEE \LaTeX\ updates under
+        \texttt{documentation/}.
+  \item \textbf{Execution} --- \texttt{main.py} (or package entry) runs a
+        visible, testable behavior for that phase.
+\end{enumerate}
+
+\section{Milestone Summary}
+
+\begin{table}[!t]
+\caption{Milestone overview}
+\label{tab:milestones}
+\centering
+\begin{tabular}{@{}clp{5.2cm}c@{}}
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Focus} & \textbf{Status} \\
+\midrule
+M1 & Scaffold & Dirs, IEEE docs, \texttt{main.py} stub & Done \\
+M2 & Backend package & \texttt{src/} package, config, wired entry & Planned \\
+M3 & Vehicle core & Dual-track chassis/tires, scenario, CSV & Planned \\
+M4 & DEM soil (small $N$) & Particle field, CPU step, unit tests & Planned \\
+M5 & Coupling & Wheel--soil forces, integration tests & Planned \\
+M6 & GPU scale path & Warp (or chosen stack), large-$N$ checks & Planned \\
+M7 & Front end & Visualization / UI client & Deferred \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{M1 --- Scaffold (Complete)}
+\begin{enumerate}
+  \item Create \texttt{documentation/}, \texttt{src/}, \texttt{tests/}.
+  \item Add IEEE SRS, SDD, testing \LaTeX; basic README; CI YAML.
+  \item \texttt{main.py} with \texttt{if \_\_name\_\_ == \"\_\_main\_\_\"} smoke print.
+\end{enumerate}
+
+\section{M2 --- Backend Package}
+\begin{enumerate}
+  \item Create \texttt{src/vehicle\_dynamics/} with \texttt{\_\_init\_\_.py},
+        \texttt{config.py}, package \texttt{\_\_main\_\_.py}.
+  \item Update SDD module map; amend SRS FR-2 config notes.
+  \item \texttt{main.py} imports package and prints loaded default config.
+\end{enumerate}
+\textbf{Exit criteria:} \texttt{python main.py} and
+\texttt{python -m vehicle\_dynamics} (with \texttt{PYTHONPATH=src}) succeed;
+pytest green.
+
+\section{M3 --- Vehicle Core}
+\begin{enumerate}
+  \item Add \texttt{vehicle/}, \texttt{integrate/}, \texttt{scenarios/},
+        \texttt{io/} modules (dual-track 3-DOF + tire stubs).
+  \item Expand SRS vehicle requirements; testing doc gains vehicle TCs.
+  \item \texttt{main.py} runs a short step-steer and writes CSV under
+        \texttt{out/}.
+\end{enumerate}
+\textbf{Exit criteria:} CSV exists; unit tests cover integrator smoke.
+
+\section{M4 --- DEM Soil (Small $N$)}
+\begin{enumerate}
+  \item Add \texttt{dem/} particle buffers and CPU contact/step stubs.
+  \item Document DEM parameters in SRS/SDD; testing doc DEM unit cases.
+  \item \texttt{main.py} advances a tiny particle bed (hundreds of bodies)
+        and logs summary stats.
+\end{enumerate}
+\textbf{Exit criteria:} Deterministic tiny DEM test passes on CI (CPU).
+
+\section{M5 --- Tire--Soil Coupling}
+\begin{enumerate}
+  \item Add \texttt{coupling/} force exchange between wheels and particles.
+  \item Update SDD data-flow diagrams; testing doc integration cases.
+  \item \texttt{main.py} runs coupled short maneuver on small DEM field.
+\end{enumerate}
+\textbf{Exit criteria:} Integration test asserts finite forces and stable step.
+
+\section{M6 --- GPU Scale Path}
+\begin{enumerate}
+  \item Implement GPU DEM kernels (default: NVIDIA Warp) behind \texttt{dem/}.
+  \item Add performance notes to testing doc; NFR scale checklist in SRS.
+  \item \texttt{main.py} flag/config selects CPU-tiny vs GPU-large modes.
+\end{enumerate}
+\textbf{Exit criteria:} Documented large-$N$ run on GPU hardware; CI keeps
+CPU-tiny path green without GPU.
+
+\section{M7 --- Front End (Deferred)}
+Visualization or interactive client consuming backend outputs. Not scheduled
+until M6 exit criteria are met.
+
+\section{Traceability}
+\begin{itemize}
+  \item Requirements: \texttt{documentation/srs.tex}
+  \item Design: \texttt{documentation/sdd.tex}
+  \item Testing: \texttt{documentation/testing.tex}
+  \item This plan: \texttt{documentation/milestones.tex}
+\end{itemize}
+
+\section*{Acknowledgment}
+This document follows the IEEE conference \LaTeX\ template (\texttt{IEEEtran}).
+
+\begin{thebibliography}{00}
+\bibitem{ieee830} IEEE Std 830-1998 (withdrawn), \emph{IEEE Recommended Practice
+for Software Requirements Specifications}.
+\bibitem{ieee1016} IEEE Std 1016-2009, \emph{IEEE Standard for Information
+Technology---Systems Design---Software Design Descriptions}.
+\bibitem{ieee829} IEEE Std 829-2008, \emph{IEEE Standard for Software and
+System Test Documentation}.
+\end{thebibliography}
+
+\end{document}
